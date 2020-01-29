@@ -14,12 +14,15 @@ from tensorflow.contrib.layers import batch_norm
 import tensorflow.contrib.slim as slim
 import tqdm
 from scipy.stats.stats import pearsonr
+from sklearn.linear_model import LogisticRegression
+
 
 _VALIDATION_RATIO = 0.1
 
 class MEDGAN(object):
     def __init__(self,
                  sess,
+                 headers,
                  model_name='medGAN',
                  dataType='binary',
                  inputDim=615,
@@ -58,7 +61,18 @@ class MEDGAN(object):
         self.decompressDims = list(decompressDims) + [inputDim]
         self.bnDecay = bnDecay
         self.l2scale = l2scale
+
         
+        self.headers = headers
+        self.sumstats_path = os.path.join(self.model_name, "sumstats")
+        if os.path.exists(self.sumstats_path):
+            print('WARNING: the folder "{}" already exists!'.format(self.sumstats_path))
+        else:
+            os.makedirs(self.sumstats_path)
+            os.makedirs(os.path.join(self.sumstats_path, 'images'))
+            os.makedirs(os.path.join(self.sumstats_path, 'results'))
+
+
     def build_model(self):
         ## input variables
         self.x_raw = tf.placeholder('float', [None, self.inputDim])
@@ -85,6 +99,7 @@ class MEDGAN(object):
             data = np.clip(data, 0, 1)
 
         trainX, validX = train_test_split(data, test_size=_VALIDATION_RATIO)
+
         return trainX, validX
     
     def buildAutoencoder(self, x_input):
@@ -219,7 +234,9 @@ class MEDGAN(object):
                      gen_from_ckpt=None,
                      out_name='temp.npy',
                      nSamples=10000,
-                     batchSize=1000):
+                     batchSize=1000,
+                     run_test = False):
+
         x_emb = self.buildGeneratorTest(self.x_random, self.bn_train)
         tempVec = x_emb
         i = 0
@@ -256,6 +273,15 @@ class MEDGAN(object):
             np.save(out_path, outputMat)
         else:
             print(" [*] Failed to find a checkpoint")
+
+        if run_test:
+            valid_temp_path = os.path.join(self.sumstats_path, 'results', "valid_temp.npy")
+            validX = np.load(valid_temp_path, allow_pickle = True)
+            logistic_generated = self.logisticRegressionClassification(train_mat=outputMat, test_mat=validX, binary=True)
+            savepath_logistic_generated = os.path.join(self.sumstats_path, 'results', 'logistic_regression_metrics_mimic_generated.csv')
+            logistic_generated.to_csv(savepath_logistic_generated, index = False)
+
+
     
     def calculateDiscAuc(self, preds_real, preds_fake):
         preds = np.concatenate([preds_real, preds_fake], axis=0)
@@ -272,7 +298,108 @@ class MEDGAN(object):
             if pred < 0.5: hit += 1
         acc = float(hit) / float(total)
         return acc
+
+    def calProb(self ,dat, headers):
+        rows = dat.shape[0]
+        dat = pd.DataFrame(dat, columns = headers)
+        colProb = dat.sum(axis = 0, skipna = True)/rows
+        return colProb
+
+
+    def plotProb(self, prob_real, prob_generated):
+        save_path = os.path.join(self.sumstats_path, 'images', 'dimension_wise_probability_comparison.png')    
+        df_real = pd.DataFrame({'icd':prob_real.index, 'probabilities_real':prob_real.values})
+        df_generated = pd.DataFrame({'icd':prob_generated.index, 'probabilities_generated':prob_generated.values})
     
+        df = pd.merge(df_real, df_generated, on = "icd")
+        df = df.sort_values(by=['probabilities_real'], ascending = True)
+        # prob = prob.sort_values(ascending = True)
+
+
+        graph = plt.figure()
+        plt.scatter(x = df['probabilities_real'], y = df['probabilities_generated'], s = 3, color = "red", alpha=0.8)
+        # plt.plot([0, max(df['probabilities_real'])], [0, max(df['probabilities_generated'])], color = 'blue')
+        plt.plot([0, 1], [0, 1], color = 'blue')
+        plt.title('Dimension-wise probabilities Comparison')
+        plt.xlabel('Real Probabilites')
+        plt.ylabel('Generated Probabilities')
+        graph.savefig(save_path, bbox_inches='tight')
+
+
+    def testProbability(self, train, test, generated):
+        headers = list(np.load(self.headers, allow_pickle = True).keys())
+        prob_generated = self.calProb(dat = generated, headers = headers)
+        prob_train = self.calProb(dat = train, headers = headers)
+        prob_test = self.calProb(dat = test, headers = headers)
+        self.plotProb(prob_real = prob_train, prob_generated = prob_generated)
+
+    
+    def logisticRegressionClassification(self, train_mat, test_mat, binary = False):
+        headers = list(np.load(self.headers, allow_pickle = True).keys())
+        train = pd.DataFrame(data = train_mat, columns = headers)
+        test = pd.DataFrame(data = test_mat, columns = headers)
+
+        if binary:
+            train[train >= 0.5] = 1
+            train[train < 0.5] = 0
+
+            test[test >= 0.5] = 1
+            test[test < 0.5] = 0
+
+        ret_list = []
+        count = 0
+
+        for col in headers:
+            count = count + 1
+            print(count)
+
+            x_train = train.drop([col], axis = 1)
+            y_train = train.loc[:, col]
+            # y_train[y_train >= 0.5] = 1
+            # y_train[y_train < 0.5] = 0
+
+            x_test = test.drop([col], axis = 1)
+            y_test = test.loc[:, col]
+
+            lr = LogisticRegression(max_iter = 300, random_state = 0)
+            # print("Starting training")
+            try:
+                lr.fit(x_train, y_train)
+                # print("Ending Training")
+                y_pred = lr.predict(x_test)
+                f1 = f1_score(y_test, y_pred)
+                acc = accuracy_score(y_test, y_pred)
+                recall = recall_score(y_test, y_pred)
+                prec = precision_score(y_test, y_pred)
+
+                prob_true = sum(y_test)/len(y_test)
+                prob_pred = sum(y_pred)/len(y_pred)
+
+            except:
+                f1 = 0.0
+                acc = 0.0
+                recall = 0.0
+                prec = 0.0
+                prob_pred = 0.0
+                prob_true = 0.0
+                print("value error detected. one class of values encountered.")
+
+            print(f1)
+
+
+            retl = [col, f1, acc, recall, prec, prob_true, prob_pred]
+            ret_list.append(retl)
+            # x_test = train.drop([col], axis = 1)
+            # y_train = train.loc[:, col]
+            # rf = RandomForestClassifier(n_estimators = 10000, random_state = 0, n_jobs = -1)
+            # if count == 5:
+            #   break
+
+
+        retdf = pd.DataFrame(ret_list, columns = ['variable', "f1", "accuracy", "recall", "precision", "prob_occurence_true", "prob_occurence_pred"])
+        
+        return retdf
+
     def train(self,
               data_path='data/inpatient_train_data.npy',
               init_from=None,
@@ -417,6 +544,12 @@ class MEDGAN(object):
                 temp_data = np.load(self.model_name+'/outputs/temp.npy')
                 temp_data = np.rint(temp_data)
                 temp_data_mean = np.mean(temp_data, axis=0)
+
+##              Testing probability and prediction
+
+                self.testProbability(train = trainX, test = validX, generated = temp_data)
+
+
                 ## compute the correlation and number of all-zero columns
                 corr = pearsonr(temp_data_mean, train_data_mean)
                 corr_vec.append(corr[0])
@@ -441,6 +574,13 @@ class MEDGAN(object):
             ## counter for file names of saved models
             epoch_counter += 1
 
+        logsitic_original = self.logisticRegressionClassification(train_mat=trainX, test_mat=validX, binary=True)
+        savepath_logistic_original = os.path.join(self.sumstats_path, 'results', 'logistic_regression_metrics_mimic_original.csv')
+        logsitic_original.to_csv(savepath_logistic_original, index = False)
+        valid_temp_path = os.path.join(self.sumstats_path, 'results', "valid_temp.npy")
+        np.save(valid_temp_path, validX)
+
+
         return [d_loss_avg_vec, g_loss_avg_vec, corr_vec, nzc_vec]
     
     def load(self, init_from, init_from_ckpt = None):
@@ -457,6 +597,9 @@ class MEDGAN(object):
         else:
             print(" [*] Failed to find a checkpoint")
             return False, 0
+
+    # def testPrediction()
+
 
 class MEDWGAN(MEDGAN):
     ## Reuse init function of MEDGAN
