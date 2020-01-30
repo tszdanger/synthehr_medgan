@@ -334,7 +334,7 @@ class MEDGAN(object):
         self.plotProb(prob_real = prob_train, prob_generated = prob_generated)
 
     
-    def logisticRegressionClassification(self, train_mat, test_mat, binary = False):
+    def logisticRegressionClassification(self, train_mat, test_mat, binary = True):
         headers = list(np.load(self.headers, allow_pickle = True).keys())
         train = pd.DataFrame(data = train_mat, columns = headers)
         test = pd.DataFrame(data = test_mat, columns = headers)
