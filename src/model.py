@@ -579,7 +579,8 @@ class MEDGAN(object):
         logsitic_original.to_csv(savepath_logistic_original, index = False)
         valid_temp_path = os.path.join(self.sumstats_path, 'results', "valid_temp.npy")
         np.save(valid_temp_path, validX)
-
+        train_temp_path = os.path.join(self.sumstats_path, 'results', "train_temp.npy")
+        np.save(train_temp_path, trainX)
 
         return [d_loss_avg_vec, g_loss_avg_vec, corr_vec, nzc_vec]
     
