@@ -82,7 +82,7 @@ class MEDGAN(object):
         self.saver = tf.train.Saver(max_to_keep = None) ## keep all checkpoints!
     
     def loadData(self, dataPath=''):
-        data = np.load(dataPath)
+        data = np.load(dataPath, allow_pickle = True)
 
         if self.dataType == 'binary':
             data = np.clip(data, 0, 1)
