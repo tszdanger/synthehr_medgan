@@ -146,12 +146,12 @@ if __name__ == "__main__":
 		if dataset == "generated":
 
 			df = logisticRegressionClassification(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("summary_stats/logistic_regression_metrics_mimic_generated.csv", index = False)
+			df.to_csv("medGAN/sumstats/logistic_regression_metrics_mimic_generated.csv", index = False)
 
 		elif dataset == "original":
 
 			df = logisticRegressionClassification(train_mat = file_original, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("summary_stats/logistic_regression_metrics_mimic_original.csv", index = False)
+			df.to_csv("medGAN/sumstats/logistic_regression_metrics_mimic_original.csv", index = False)
 
 
 		else:
