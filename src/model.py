@@ -483,6 +483,7 @@ class MEDWGAN(MEDGAN):
                  bnDecay=0.99,
                  l2scale=0.001,
                  gp_scale=10.0):
+
         super(MEDWGAN, self).__init__(sess,
                                       model_name,
                                       dataType,
@@ -575,7 +576,7 @@ class MEDWGAN(MEDGAN):
 
         initOp = tf.global_variables_initializer()
         nBatches = int(np.ceil(float(trainX.shape[0]) / float(batchSize)))
-        log_path = os.path.join(self.model_name, 'models', self.model_name + '.log')
+        log_path = os.path.join(self.model_path, 'models', self.model_name + '.log')
         
         ## initialization
         self.sess.run(initOp)
@@ -626,7 +627,7 @@ class MEDWGAN(MEDGAN):
             ax.set_xlabel('epoch')
             ax.set_ylabel('loss')
             ax.legend(loc=4)
-            fig.savefig(self.model_name+'/outputs/ae_loss.png')
+            fig.savefig(self.model_path+'/sumstats/ae_loss.png')
             plt.close(fig)
 
         ## the main loop of GAN
@@ -684,7 +685,7 @@ class MEDWGAN(MEDGAN):
 
             ## (3) Save model weights
             if epoch > 0 and epoch % 10 == 0:
-                save_path = self.saver.save(self.sess, os.path.join(self.model_name, 'models', self.model_name + '.model'),
+                save_path = self.saver.save(self.sess, os.path.join(self.model_path, 'models', self.model_name + '.model'),
                                             global_step=epoch_counter)
                 print(save_path)
                 
@@ -714,7 +715,7 @@ class MEDWGAN(MEDGAN):
                 ax.set_title('Epoch: %d, corr: %.4f, none-zero columns: %d'%(epoch, corr[0], nzc))
                 ax.set_xlabel('real')
                 ax.set_ylabel('generated')
-                fig.savefig(self.model_name+'/outputs/{}.png'.format(epoch))
+                fig.savefig(self.model_name+'/sumstats/{}.png'.format(epoch))
                 plt.close(fig)
 
             ## counter for file names of saved models
