@@ -445,6 +445,11 @@ class MEDGAN(object):
             ## counter for file names of saved models
             epoch_counter += 1
 
+        train_path = os.path.join(self.model_path, "sumstats", "train.npy")
+        np.save(train_path, trainX)    
+        valid_path = os.path.join(self.model_path, "sumstats", "valid.npy")
+        np.save(valid_path, validX)    
+
         return [d_loss_avg_vec, g_loss_avg_vec, corr_vec, nzc_vec]
     
     def load(self, init_from, init_from_ckpt = None):
