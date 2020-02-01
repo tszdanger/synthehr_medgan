@@ -14,8 +14,6 @@ from tensorflow.contrib.layers import batch_norm
 import tensorflow.contrib.slim as slim
 import tqdm
 from scipy.stats.stats import pearsonr
-from sklearn.linear_model import LogisticRegression
-
 
 _VALIDATION_RATIO = 0.1
 
@@ -43,8 +41,6 @@ def parse_arguments(parser):
     parser.add_argument('--pretrain_batch_size', type=int, default=100, help='The size of a single mini-batch for pre-training the autoencoder. (default value: 100)')
     parser.add_argument('--batch_size', type=int, default=1000, help='The size of a single mini-batch for training medGAN. (default value: 1000)')
     parser.add_argument('--save_max_keep', type=int, default=0, help='The number of models to keep. Setting this to 0 will save models for every epoch. (default value: 0)')
-    parser.add_argument('--data_headers', type=str, default="../data/mimic_binary.types", help='the path to the header files of the generated, primarily to enable conversion to dataframe')
-
     args = parser.parse_args()
     return args
     ## for jupyter notebook
@@ -82,7 +78,6 @@ with tf.Session() as sess:
                      l2scale=args.L2)
     else:
         mg = MEDGAN(sess,
-                    headers = args.data_headers,
                     model_name=args.model,
                     dataType=args.data_type,
                     inputDim=train_data.shape[1],
@@ -125,7 +120,6 @@ with tf.Session() as sess:
                      l2scale=args.L2)
     else:
         mg = MEDGAN(sess,
-                    headers = args.data_headers,
                     model_name=args.model,
                     dataType=args.data_type,
                     inputDim=train_data.shape[1],
@@ -137,8 +131,7 @@ with tf.Session() as sess:
     mg.generateData(nSamples=train_data.shape[0],
                     gen_from=args.model,
                     out_name='generated.npy',
-                    batchSize=args.batch_size,
-                    run_test = True)
+                    batchSize=args.batch_size)
 
 
 
