@@ -218,7 +218,7 @@ class MEDGAN(object):
         outfd.close()
     
     def generateData(self,
-                     gen_from=self.model_path,
+                     gen_from="../results",
                      gen_from_ckpt=None,
                      out_name='temp.npy',
                      nSamples=10000,
