@@ -694,7 +694,7 @@ class MEDWGAN(MEDGAN):
                                   gen_from=self.model_name,
                                   out_name='temp.npy',
                                   batchSize=batchSize)
-                temp_data = np.load(self.model_name+'/outputs/temp.npy')
+                temp_data = np.load(self.model_path+'/outputs/temp.npy')
                 temp_data = np.rint(temp_data)
                 temp_data_mean = np.mean(temp_data, axis=0)
                 ## compute the correlation and number of all-zero columns
@@ -715,7 +715,7 @@ class MEDWGAN(MEDGAN):
                 ax.set_title('Epoch: %d, corr: %.4f, none-zero columns: %d'%(epoch, corr[0], nzc))
                 ax.set_xlabel('real')
                 ax.set_ylabel('generated')
-                fig.savefig(self.model_name+'/sumstats/{}.png'.format(epoch))
+                fig.savefig(self.model_path+'/sumstats/{}.png'.format(epoch))
                 plt.close(fig)
 
             ## counter for file names of saved models
