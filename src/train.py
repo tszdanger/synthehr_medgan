@@ -128,8 +128,9 @@ with tf.Session() as sess:
                     bnDecay=args.batchnorm_decay,
                     l2scale=args.L2)
     mg.build_model()
+    save_chk = os.path.join("../results", args.model, args.data_type)
     mg.generateData(nSamples=train_data.shape[0],
-                    gen_from=args.model,
+                    gen_from=save_chk,
                     out_name='generated.npy',
                     batchSize=args.batch_size)
 
