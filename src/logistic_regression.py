@@ -79,86 +79,28 @@ def logisticRegressionClassification(train_mat, test_mat, headers, binary = Fals
 
 
 if __name__ == "__main__":
-	database = sys.argv[1]
-	dataset = sys.argv[2]
 
-	# database = "mimic"
-	# dataset = "original"
+	headers_dict = np.load("../data/mimic_binary.types", allow_pickle = True)
+	bh = list(headers_dict.keys())
 
-
-	# count_headers = np.load("../pretrain/count.types", allow_pickle = True)
-	
-	if database == "cerner":
-		headers_dict = np.load("../pretrain/x_train_filtered_01.types", allow_pickle = True)
-		bh = list(headers_dict.keys())
-
-		filename_healthgan = "../pretrain/healthgan.matrix"
-		file_healthgan = np.load(filename_healthgan, allow_pickle = True)
-
-		filename_medgan = "../synthetic/x_synthetic_v3.npy" 
-		file_medgan = np.load(filename_medgan)
-		print(file_medgan.shape)
+	filename_generated = "../results/medGAN/binary/outputs/generated.npy" 
+	file_generated = np.load(filename_generated)
+	print(file_generated.shape)
 		
-		filename_test = "../pretrain/x_test_v3.matrix"
-		file_test = np.load(filename_test, allow_pickle = True)
-		print(file_test.shape)
+	filename_test = "../results/medGAN/binary/sumstats/valid.npy"
+	file_test = np.load(filename_test, allow_pickle = True)
+	print(file_test.shape)
 
-		filename_original = "../pretrain/x_train_v3.matrix"
-		file_original = np.load(filename_original, allow_pickle = True)
-		print(file_original.shape)
+	filename_original = "../results/medGAN/binary/sumstats/train.npy"
+	file_original = np.load(filename_original, allow_pickle = True)
+	print(file_original.shape)
 
-		if dataset == "medgan":
-
-			df = logisticRegressionClassification(train_mat = file_medgan, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("../summary_stats/logistic_regression_metrics_medgan_v3.csv", index = False)
-
-		elif dataset == "original":
-
-			df = logisticRegressionClassification(train_mat = file_original, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("../summary_stats/logistic_regression_metrics_original_v3.csv", index = False)
-	 
-		elif dataset == "healthgan":
-
-			df = logisticRegressionClassification(train_mat = file_healthgan, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("../summary_stats/logistic_regression_metrics_healthgan_v3.csv", index = False)
+	df = logisticRegressionClassification(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
+	df.to_csv("../results/medGAN/binary/sumstats/logistic_regression_metrics_mimic_generated.csv", index = False)
 
 
-		else:
-			print("please input a correct dataset name")
-
-	elif database == "mimic":
-		headers_dict = np.load("../data/mimic_binary.types", allow_pickle = True)
-		bh = list(headers_dict.keys())
-
-		filename_generated = "medGAN/outputs/generated.npy" 
-		# filename_generated = "../synthetic/mimic_binary_synthetic.npy" 
-		file_generated = np.load(filename_generated)
-		print(file_generated.shape)
-		
-		filename_test = "../data/mimic_binary.matrix"
-		file_test = np.load(filename_test, allow_pickle = True)
-		print(file_test.shape)
-
-		filename_original = "../data/mimic_binary.matrix"
-		file_original = np.load(filename_original, allow_pickle = True)
-		print(file_original.shape)
-
-		if dataset == "generated":
-
-			df = logisticRegressionClassification(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("medGAN/sumstats/logistic_regression_metrics_mimic_generated.csv", index = False)
-
-		elif dataset == "original":
-
-			df = logisticRegressionClassification(train_mat = file_original, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("medGAN/sumstats/logistic_regression_metrics_mimic_original.csv", index = False)
-
-
-		else:
-			print("please input a correct dataset name")
-
-	else:
-		print("Please input a correct database")
+	df = logisticRegressionClassification(train_mat = file_original, test_mat = file_test, headers = bh, binary = True)
+	df.to_csv("../results/medGAN/binary/sumstats/logistic_regression_metrics_mimic_original.csv", index = False)
 
 
 	# df = randomForestUndersampling(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
