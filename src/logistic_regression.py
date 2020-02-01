@@ -10,7 +10,6 @@ from imblearn.over_sampling import RandomOverSampler, SMOTE, ADASYN
 
 # from sklearn.metrics import 
 
-
 def logisticRegressionClassification(train_mat, test_mat, headers, binary = False):
 	train = pd.DataFrame(data = train_mat, columns = headers)
 	test = pd.DataFrame(data = test_mat, columns = headers)
@@ -75,74 +74,6 @@ def logisticRegressionClassification(train_mat, test_mat, headers, binary = Fals
 	retdf = pd.DataFrame(ret_list, columns = ['variable', "f1", "accuracy", "recall", "precision", "prob_occurence_true", "prob_occurence_pred"])
 	
 	return retdf
-
-
-def logisticRegressionClassification(train_mat, test_mat, headers, binary = False):
-	train = pd.DataFrame(data = train_mat, columns = headers)
-	test = pd.DataFrame(data = test_mat, columns = headers)
-
-	if binary:
-		train[train >= 0.5] = 1
-		train[train < 0.5] = 0
-
-		test[test >= 0.5] = 1
-		test[test < 0.5] = 0
-
-	ret_list = []
-	count = 0
-
-	for col in headers:
-		count = count + 1
-		print(count)
-
-		x_train = train.drop([col], axis = 1)
-		y_train = train.loc[:, col]
-		# y_train[y_train >= 0.5] = 1
-		# y_train[y_train < 0.5] = 0
-
-		x_test = test.drop([col], axis = 1)
-		y_test = test.loc[:, col]
-
-		lr = LogisticRegression(max_iter = 300, random_state = 0)
-		# print("Starting training")
-		try:
-			lr.fit(x_train, y_train)
-			# print("Ending Training")
-			y_pred = lr.predict(x_test)
-			f1 = f1_score(y_test, y_pred)
-			acc = accuracy_score(y_test, y_pred)
-			recall = recall_score(y_test, y_pred)
-			prec = precision_score(y_test, y_pred)
-
-			prob_true = sum(y_test)/len(y_test)
-			prob_pred = sum(y_pred)/len(y_pred)
-
-		except:
-			f1 = 0.0
-			acc = 0.0
-			recall = 0.0
-			prec = 0.0
-			prob_pred = 0.0
-			prob_true = 0.0
-			print("value error detected. one class of values encountered.")
-
-		print(f1)
-
-
-		retl = [col, f1, acc, recall, prec, prob_true, prob_pred]
-		ret_list.append(retl)
-		# x_test = train.drop([col], axis = 1)
-		# y_train = train.loc[:, col]
-		# rf = RandomForestClassifier(n_estimators = 10000, random_state = 0, n_jobs = -1)
-		# if count == 5:
-		# 	break
-
-
-	retdf = pd.DataFrame(ret_list, columns = ['variable', "f1", "accuracy", "recall", "precision", "prob_occurence_true", "prob_occurence_pred"])
-	
-	return retdf
-
-
 
 
 
@@ -215,12 +146,12 @@ if __name__ == "__main__":
 		if dataset == "generated":
 
 			df = logisticRegressionClassification(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("../summary_stats/logistic_regression_metrics_mimic_generated.csv", index = False)
+			df.to_csv("summary_stats/logistic_regression_metrics_mimic_generated.csv", index = False)
 
 		elif dataset == "original":
 
 			df = logisticRegressionClassification(train_mat = file_original, test_mat = file_test, headers = bh, binary = True)
-			df.to_csv("../summary_stats/logistic_regression_metrics_mimic_original.csv", index = False)
+			df.to_csv("summary_stats/logistic_regression_metrics_mimic_original.csv", index = False)
 
 
 		else:
