@@ -80,27 +80,29 @@ def logisticRegressionClassification(train_mat, test_mat, headers, binary = Fals
 
 if __name__ == "__main__":
 
+	model = sys.argv[1]
+
 	headers_dict = np.load("../data/mimic_binary.types", allow_pickle = True)
 	bh = list(headers_dict.keys())
 
-	filename_generated = "../results/medGAN/binary/outputs/generated.npy" 
+	filename_generated = os.path.join("../results", model, "binary/outputs/generated.npy") 
 	file_generated = np.load(filename_generated)
 	print(file_generated.shape)
 		
-	filename_test = "../results/medGAN/binary/sumstats/valid.npy"
+	filename_test = os.path.join("../results", model, "binary/sumstats/valid.npy")
 	file_test = np.load(filename_test, allow_pickle = True)
 	print(file_test.shape)
 
-	filename_original = "../results/medGAN/binary/sumstats/train.npy"
+	filename_original = os.path.join("../results", model, "binary/sumstats/train.npy")
 	file_original = np.load(filename_original, allow_pickle = True)
 	print(file_original.shape)
 
 	df = logisticRegressionClassification(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
-	df.to_csv("../results/medGAN/binary/sumstats/logistic_regression_metrics_mimic_generated.csv", index = False)
+	df.to_csv(os.path.join("../results", model, "binary/sumstats/logistic_regression_metrics_mimic_generated.csv"), index = False)
 
 
 	df = logisticRegressionClassification(train_mat = file_original, test_mat = file_test, headers = bh, binary = True)
-	df.to_csv("../results/medGAN/binary/sumstats/logistic_regression_metrics_mimic_original.csv", index = False)
+	df.to_csv(os.path.join("../results", model, "binary/sumstats/logistic_regression_metrics_mimic_original.csv"), index = False)
 
 
 	# df = randomForestUndersampling(train_mat = file_generated, test_mat = file_test, headers = bh, binary = True)
