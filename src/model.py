@@ -691,7 +691,7 @@ class MEDWGAN(MEDGAN):
                 
                 ## monitor the quality of generated data during training process:
                 self.generateData(nSamples=trainX.shape[0],
-                                  gen_from=self.model_name,
+                                  gen_from=self.model_path,
                                   out_name='temp.npy',
                                   batchSize=batchSize)
                 temp_data = np.load(self.model_path+'/outputs/temp.npy')
