@@ -30,7 +30,8 @@ class MEDGAN(object):
                  compressDims=(),
                  decompressDims=(),
                  bnDecay=0.99,
-                 l2scale=0.001):
+                 l2scale=0.001,
+                 dataset="mimic"):
         self.sess = sess
         self.model_name = model_name
         ## create a dedicated folder for this model
@@ -482,7 +483,8 @@ class MEDWGAN(MEDGAN):
                  decompressDims=(),
                  bnDecay=0.99,
                  l2scale=0.001,
-                 gp_scale=10.0):
+                 gp_scale=10.0,
+                 dataset="mimic"):
 
         super(MEDWGAN, self).__init__(sess,
                                       model_name,
@@ -744,7 +746,8 @@ class MEDBGAN(MEDGAN):
                  compressDims=(),
                  decompressDims=(),
                  bnDecay=0.99,
-                 l2scale=0.001):
+                 l2scale=0.001,
+                 dataset="mimic"):
         super(MEDBGAN, self).__init__(sess,
                                       model_name,
                                       dataType,
