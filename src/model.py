@@ -498,7 +498,8 @@ class MEDWGAN(MEDGAN):
                                       compressDims,
                                       decompressDims,
                                       bnDecay,
-                                      l2scale)
+                                      l2scale,
+                                      dataset)
         self.gp_scale = gp_scale
     
     ## Re-write getDiscriminatorResults(), buildDiscriminator(), and train() functions
@@ -760,7 +761,8 @@ class MEDBGAN(MEDGAN):
                                       compressDims,
                                       decompressDims,
                                       bnDecay,
-                                      l2scale)
+                                      l2scale,
+                                      dataset)
     
     def buildDiscriminator(self, x_real, x_fake, keepRate, decodeVariables, bn_train):
         #Discriminate for real samples

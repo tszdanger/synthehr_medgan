@@ -17,6 +17,7 @@ from scipy.stats.stats import pearsonr
 
 _VALIDATION_RATIO = 0.1
 
+
 from model import MEDGAN, MEDWGAN, MEDBGAN
 
 def parse_arguments(parser):
@@ -42,6 +43,7 @@ def parse_arguments(parser):
     parser.add_argument('--batch_size', type=int, default=1000, help='The size of a single mini-batch for training medGAN. (default value: 1000)')
     parser.add_argument('--save_max_keep', type=int, default=0, help='The number of models to keep. Setting this to 0 will save models for every epoch. (default value: 0)')
     parser.add_argument('--data_set', type=str, default='mimic', help='The name of dataset folder in results')
+    parser.add_argument('--gpu', type=int, default=0, help='Specify the gpu to be used in the training')
 
     args = parser.parse_args()
     return args
@@ -51,6 +53,11 @@ def parse_arguments(parser):
 
 parser = argparse.ArgumentParser()
 args = parse_arguments(parser)
+
+# Specifying the gpu to be used
+# gpu = args.gpu
+# os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
+
 
 # Pre-load training data
 train_data = np.load(args.data_file, allow_pickle = True)
