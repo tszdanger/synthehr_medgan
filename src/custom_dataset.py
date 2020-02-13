@@ -8,7 +8,7 @@ import pickle
 import argparse
 
 def combineArrays(arr1, arr2):
-	return np.vstack(arr1, arr2)
+	return np.vstack([arr1, arr2])
 
 
 if __name__ == "__main__":
