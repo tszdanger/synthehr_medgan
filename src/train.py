@@ -41,6 +41,8 @@ def parse_arguments(parser):
     parser.add_argument('--pretrain_batch_size', type=int, default=100, help='The size of a single mini-batch for pre-training the autoencoder. (default value: 100)')
     parser.add_argument('--batch_size', type=int, default=1000, help='The size of a single mini-batch for training medGAN. (default value: 1000)')
     parser.add_argument('--save_max_keep', type=int, default=0, help='The number of models to keep. Setting this to 0 will save models for every epoch. (default value: 0)')
+    parser.add_argument('--data_set', type=str, default='mimic', help='The name of dataset folder in results')
+
     args = parser.parse_args()
     return args
     ## for jupyter notebook
@@ -66,7 +68,8 @@ with tf.Session() as sess:
                      decompressDims=args.decompressor_size,
                      bnDecay=args.batchnorm_decay,
                      l2scale=args.L2,
-                     gp_scale=args.gp_scale)
+                     gp_scale=args.gp_scale,
+                     dataset=args.data_set)
     elif re.search('medBGAN', args.model):
         mg = MEDBGAN(sess,
                      model_name=args.model,
@@ -75,7 +78,8 @@ with tf.Session() as sess:
                      compressDims=args.compressor_size,
                      decompressDims=args.decompressor_size,
                      bnDecay=args.batchnorm_decay,
-                     l2scale=args.L2)
+                     l2scale=args.L2,
+                     dataset=args.data_set)
     else:
         mg = MEDGAN(sess,
                     model_name=args.model,
@@ -84,7 +88,8 @@ with tf.Session() as sess:
                     compressDims=args.compressor_size,
                     decompressDims=args.decompressor_size,
                     bnDecay=args.batchnorm_decay,
-                    l2scale=args.L2)
+                    l2scale=args.L2,
+                    dataset=args.data_set)
     mg.build_model()
     results = mg.train(data_path=args.data_file,
                        pretrainEpochs=args.n_pretrain_epoch,
