@@ -113,7 +113,8 @@ with tf.Session() as sess:
                      decompressDims=args.decompressor_size,
                      bnDecay=args.batchnorm_decay,
                      l2scale=args.L2,
-                     gp_scale=args.gp_scale)
+                     gp_scale=args.gp_scale,
+                     dataset=args.data_set)
     elif re.search('medBGAN', args.model):
         mg = MEDBGAN(sess,
                      model_name=args.model,
@@ -122,7 +123,8 @@ with tf.Session() as sess:
                      compressDims=args.compressor_size,
                      decompressDims=args.decompressor_size,
                      bnDecay=args.batchnorm_decay,
-                     l2scale=args.L2)
+                     l2scale=args.L2,
+                     dataset=args.data_set)
     else:
         mg = MEDGAN(sess,
                     model_name=args.model,
@@ -131,9 +133,10 @@ with tf.Session() as sess:
                     compressDims=args.compressor_size,
                     decompressDims=args.decompressor_size,
                     bnDecay=args.batchnorm_decay,
-                    l2scale=args.L2)
+                    l2scale=args.L2,
+                    dataset=args.data_set)
     mg.build_model()
-    save_chk = os.path.join("../results", args.model, args.data_type)
+    save_chk = os.path.join("../results", args.data_set, args.model, args.data_type)
     mg.generateData(nSamples=train_data.shape[0],
                     gen_from=save_chk,
                     out_name='generated.npy',
