@@ -34,8 +34,9 @@ class MEDGAN(object):
                  dataset="mimic"):
         self.sess = sess
         self.model_name = model_name
+        self.dataset = dataset
         ## create a dedicated folder for this model
-        self.model_path = os.path.join("../results/", self.model_name, dataType)
+        self.model_path = os.path.join("../results/", self.dataset, self.model_name, dataType)
         if os.path.exists(self.model_path):
             print('WARNING: the folder "{}" already exists!'.format(self.model_path))
         else:
