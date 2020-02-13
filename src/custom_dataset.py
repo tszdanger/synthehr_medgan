@@ -22,15 +22,18 @@ if __name__ == "__main__":
 	train_file = "../raw/x_train_v3.npy"
 	test_file = "../raw/x_test_v3.npy"
 	header_file = "../raw/headers.txt"
-	reshape = 0
 	outfile = "../data/cerner"
 
-	dat = combineArrays(train_file, test_file)
+	train = np.load(train_file, allow_pickle = "True")
+	test = np.load(test_file, allow_pickle = "True")
+
+	train = train.reshape(dat.shape[0], -1)	
+	test = test.reshape(dat.shape[0], -1)	
+
+	dat = combineArrays(train, test)
 
 	# fn = readfile
 	# dat = np.load(fn, allow_pickle = True)
-	if reshape:
-		dat = dat.reshape(dat.shape[0], -1)
 
 
 
