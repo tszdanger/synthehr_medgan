@@ -83,7 +83,7 @@ if __name__ == "__main__":
 	model = sys.argv[1]
 	dataset = sys.argv[2]
 	mode = ""
-	if model == "cerner":
+	if dataset == "cerner":
 		mode = ""
 	else:
 		mode = "_binary"
