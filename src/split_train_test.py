@@ -14,10 +14,17 @@ if __name__ == "__main__":
 
 	matrixpath = sys.argv[1]
 	savepath = sys.argv[2]
+	dataset = sys.argv[3]
 
-	matrix = matrixpath + ".matrix"
-	pidpath = matrixpath + ".pids"
-	headerpath = matrixpath + ".types"
+	if dataset == "mimic":
+		matrix = matrixpath + ".matrix"
+		pidpath = matrixpath + ".pids"
+		headerpath = matrixpath + ".types"
+
+	else:
+		matrix = matrixpath + ".matrix"
+		headerpath = matrixpath + ".types"
+
 
 	ratio = 0.2
 
@@ -33,10 +40,12 @@ if __name__ == "__main__":
 	pickle.dump(X_train, open(trainpath, 'wb'), -1)
 	pickle.dump(X_test, open(testpath, 'wb'), -1)
 
-	pidtrain =savepath + "_train.pids"
-	pidtest = savepath + "_test.pids"
-	copyfile(pidpath, pidtrain)
-	copyfile(pidpath, pidtest)
+	if dataset == "mimic":
+		pidtrain =savepath + "_train.pids"
+		pidtest = savepath + "_test.pids"
+		copyfile(pidpath, pidtrain)
+		copyfile(pidpath, pidtest)
+
 
 	headertrain =savepath + "_train.types"
 	headertest = savepath + "_test.types"
