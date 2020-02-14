@@ -133,3 +133,5 @@ if __name__ == '__main__':
     pickle.dump(pids, open(outFile+'.pids', 'wb'), -1)
     pickle.dump(matrix, open(outFile+'.matrix', 'wb'), -1)
     pickle.dump(types, open(outFile+'.types', 'wb'), -1)
+
+    print(matrix.shape)
