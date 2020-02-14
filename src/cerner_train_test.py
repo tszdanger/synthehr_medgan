@@ -11,5 +11,8 @@ if __name__ == "__main__":
 	train = np.load(train_file, allow_pickle = True)
 	test = np.load(test_file, allow_pickle = True)
 
+	print(train.shape)
+	print(test.shape)
+
 	pickle.dump(train, open("../data/cerner_train.matrix", 'wb'), -1)
 	pickle.dump(test, open("../data/cerner_test.matrix", 'wb'), -1)
