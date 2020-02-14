@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from shutil import copyfile
+import _pickle as pickle
 
 def trainTestSplit(X, y, ratio = 0.2):
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = ratio, random_state = 42)
@@ -26,11 +27,11 @@ if __name__ == "__main__":
 
 	print(X_train.shape)
 	print(X_test.shape)
-	
+
 	trainpath = savepath + "_train.matrix"
 	testpath = savepath + "_test.matrix"
-	np.save(trainpath, X_train)
-	np.save(testpath, X_test)
+	pickle.dump(X_train, open(trainpath, 'wb'), -1)
+	pickle.dump(X_test, open(testpath, 'wb'), -1)
 
 	pidtrain =savepath + "_train.pids"
 	pidtest = savepath + "_test.pids"
