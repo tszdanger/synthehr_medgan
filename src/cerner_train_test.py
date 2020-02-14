@@ -11,6 +11,9 @@ if __name__ == "__main__":
 	train = np.load(train_file, allow_pickle = True)
 	test = np.load(test_file, allow_pickle = True)
 
+	train = train.reshape(train.shape[0], -1)
+	test = test.reshape(test.shape[0], -1)
+
 	print(train.shape)
 	print(test.shape)
 
