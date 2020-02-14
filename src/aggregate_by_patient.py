@@ -8,15 +8,15 @@ if __name__ == "__main__":
 
 	adm_file = "../raw/ADMISSIONS.csv"
 	adm = pd.read_csv(adm_file)
+	adm = adm.drop(['ROW_ID'], axis = 1)
 	adm['HADM_ID'] = adm['SUBJECT_ID']
-	# print(adm.loc[:, ['SUBJECT_ID', 'HADM_ID']].head(100))
-	adm.to_csv("../raw/ADMISSIONS_aggregated.csv")
+	adm.to_csv("../raw/ADMISSIONS_aggregated.csv", index = False)
 
 
 	diag_file = "../raw/DIAGNOSES_ICD.csv"
 	diag = pd.read_csv(diag_file)
-	print(diag.columns)
+	diag = diag.drop(['ROW_ID'], axis = 1)
 	diag['HADM_ID'] = diag['SUBJECT_ID']
-	# print(diag.loc[:, ['SUBJECT_ID', 'HADM_ID']].head(100))
-	adm.to_csv("../raw/DIAGNOSES_ICD_aggregated.csv")
+	diag['HADM_ID'] = diag['SUBJECT_ID']
+	adm.to_csv("../raw/DIAGNOSES_ICD_aggregated.csv", index = False)
 
