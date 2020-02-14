@@ -75,7 +75,7 @@ if __name__ == '__main__':
         tokens = line.strip().split(',')
         admId = int(tokens[1])
         #dxStr = 'D_' + convert_to_icd9(tokens[4][1:-1]) ############## Uncomment this line and comment the line below, if you want to use the entire ICD9 digits.
-        dxStr = 'D_' + convert_to_3digit_icd9(tokens[4])
+        dxStr = 'D_' + convert_to_3digit_icd9(tokens[3])
         if admId in admDxMap: admDxMap[admId].append(dxStr)
         else: admDxMap[admId] = [dxStr]        
     infd.close()
