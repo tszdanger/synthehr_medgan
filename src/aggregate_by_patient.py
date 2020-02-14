@@ -18,5 +18,5 @@ if __name__ == "__main__":
 	diag = diag.drop(['ROW_ID'], axis = 1)
 	diag['HADM_ID'] = diag['SUBJECT_ID']
 	diag['HADM_ID'] = diag['SUBJECT_ID']
-	adm.to_csv("../raw/DIAGNOSES_ICD_aggregated.csv", index = False)
+	diag.to_csv("../raw/DIAGNOSES_ICD_aggregated.csv", index = False)
 
