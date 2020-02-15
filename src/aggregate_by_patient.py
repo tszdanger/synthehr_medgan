@@ -6,8 +6,7 @@ import pandas as pd
 
 if __name__ == "__main__":
 
-	aggregate = sys.argv[1]
-	print(aggregate)
+	aggregate = int(sys.argv[1])
 
 	adm_file = "../raw/ADMISSIONS.csv"
 	adm = pd.read_csv(adm_file)
@@ -22,6 +21,7 @@ if __name__ == "__main__":
 	diag = pd.read_csv(diag_file)
 	diag = diag.drop(['ROW_ID'], axis = 1)
 	if aggregate:
+		print(aggregate)
 		diag['HADM_ID'] = diag['SUBJECT_ID']
 		diag.to_csv("../raw/DIAGNOSES_ICD_aggregated.csv", index = False)
 	else:
