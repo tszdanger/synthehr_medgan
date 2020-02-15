@@ -7,6 +7,7 @@ import pandas as pd
 if __name__ == "__main__":
 
 	aggregate = sys.argv[1]
+	print(aggregate)
 
 	adm_file = "../raw/ADMISSIONS.csv"
 	adm = pd.read_csv(adm_file)
