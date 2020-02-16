@@ -85,7 +85,7 @@ if __name__ == "__main__":
 	mode = ""
 	if dataset == "cerner":
 		mode = ""
-	elif dataset = "mimic_na:
+	elif dataset = "mimic_na":
 		mode = ""
 	else:
 		mode = "_binary"
