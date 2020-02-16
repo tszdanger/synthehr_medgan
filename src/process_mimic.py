@@ -37,6 +37,7 @@ if __name__ == '__main__':
     diagnosisFile = sys.argv[2]
     outFile = sys.argv[3]
     binary_count = sys.argv[4]
+    aggregate = int(sys.argv[5])
 
     # admissionFile = "mimic_raw/ADMISSIONS.csv"
     # diagnosisFile = "mimic_raw/DIAGNOSES_ICD.csv"
@@ -54,7 +55,11 @@ if __name__ == '__main__':
     infd.readline()
     for line in infd:
         tokens = line.strip().split(',')
-        pid = int(tokens[0])
+        if aggregate:
+            pid = int(tokens[0])
+        else:
+            pid = int(tokens[1])
+            
         admId = int(tokens[1])
         try: 
             admTime = datetime.strptime(tokens[2], '%Y-%m-%d %H:%M:%S')
@@ -65,6 +70,9 @@ if __name__ == '__main__':
         if pid in pidAdmMap: pidAdmMap[pid].append(admId)
         else: pidAdmMap[pid] = [admId]
     infd.close()
+
+    # if aggregate:
+    #     token_id = 
 
 
     print('Building admission-dxList mapping')
