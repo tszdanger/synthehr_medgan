@@ -10,6 +10,16 @@
 # <output file>.matrix: Numpy float32 matrix. Each row corresponds to a patient. Each column corresponds to a ICD9 diagnosis code.
 # <output file>.types: cPickled Python dictionary that maps string diagnosis codes to integer diagnosis codes.
 
+# 中文翻译 该脚本用于将 MIMIC-III 数据集转换成二进制矩阵或者计数矩阵（取决于你的参数）
+# 输出矩阵是float32的numpy矩阵，适合训练medgan
+# 翻译自skywf(skywf.lzj@gmail.com)
+# 将该脚本放在MIMIC-III CSV文件所在位置，然后运行以下命令
+# python process_mimic.py ADMISSIONS.csv DIAGNOSES_ICD.csv <output file> <"binary"|"count">
+# 其中个参数含义如下：
+# output file：输出路径，"binary"|"count"转换成二进制矩阵或者计数矩阵
+#剩下的两个参数可见如下网址
+# https://blog.csdn.net/m0_37520426/article/details/89321998
+
 import sys
 import _pickle as pickle
 import numpy as np
